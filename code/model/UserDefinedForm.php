@@ -754,8 +754,7 @@ JS
 		Session::clear("FormInfo.{$form->FormName()}.errors");
 		Session::clear("FormInfo.{$form->FormName()}.data");
 
-		$referrer = (isset($data['Referrer'])) ? '?referrer=' . urlencode($data['Referrer']) : "";
-
+		
 		// set a session variable from the security ID to stop people accessing
 		// the finished method directly.
 		if(!$this->DisableAuthenicatedFinishAction) {
@@ -776,6 +775,12 @@ JS
 		if(!$this->DisableSaveSubmissions) {
 			Session::set('userformssubmission'. $this->ID, $submittedForm->ID);
 		}
+		
+		return $this->onAfterProcess($data, $form, $submittedForm, $submittedFields);
+	}
+	
+	public function onAfterProcess($data, $form, $submittedForm, $submittedFields) {
+		$referrer = (isset($data['Referrer'])) ? '?referrer=' . urlencode($data['Referrer']) : "";
 
 		return $this->redirect($this->Link('finished') . $referrer . $this->config()->finished_anchor);
 	}
