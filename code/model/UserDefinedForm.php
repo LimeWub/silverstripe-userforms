@@ -308,6 +308,11 @@ class UserDefinedForm_Controller extends Page_Controller {
 
 	private static $finished_anchor = '#uff';
 
+	/**
+	 * @var string Submitted Form Type
+	 */
+	public static $submittedFormType = "SubmittedForm";
+	
 	private static $allowed_actions = array(
 		'index',
 		'ping',
@@ -584,7 +589,10 @@ JS
 	 * @return Redirection
 	 */
 	public function process($data, $form) {
-		$submittedForm = Object::create('SubmittedForm');
+		$submittedForm = Object::create(static::$submittedFormType);
+		if (!is_a($submittedForm,'SubmittedForm')) {
+			user_error("UserDefinedForm::process: Specified submitted form type (static::submittedFormType) is not a SubmittedForm",	E_USER_ERROR);
+		}
 		$submittedForm->SubmittedByID = ($id = Member::currentUserID()) ? $id : 0;
 		$submittedForm->ParentID = $this->ID;
 
