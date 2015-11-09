@@ -595,7 +595,12 @@ JS
 		}
 		$submittedForm->SubmittedByID = ($id = Member::currentUserID()) ? $id : 0;
 		$submittedForm->ParentID = $this->ID;
-
+		
+		// allow the submitted form to be modified before it is saved
+		$continue = $this->updateSubmittedForm($submittedForm,$data);
+		//if something has gone wrong and $updateSubmittedForm returns ==false, stop.
+		if (!$continue) return;
+		
 		// if saving is not disabled save now to generate the ID
 		if(!$this->DisableSaveSubmissions) {
 			$submittedForm->write();
@@ -783,6 +788,9 @@ JS
 		$referrer = (isset($data['Referrer'])) ? '?referrer=' . urlencode($data['Referrer']) : "";
 
 		return $this->redirect($this->Link('finished') . $referrer . $this->config()->finished_anchor);
+	}
+	
+	public function updateSubmittedForm($submittedForm, $data) {
 	}
 
 	/**
